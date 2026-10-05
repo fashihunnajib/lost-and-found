@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: API Lost & Found Documentation
+  version: 1.0.0
+  description: Dokumentasi OpenAPI untuk API Pelacakan Barang Hilang dan Ditemukan
+servers:
+  - url: http://127.0.0.1:8000
+    description: Local Server
+paths:
+  /api/items:
+    get:
+      summary: BROWSE - Menampilkan daftar seluruh laporan barang
+      tags:
+        - Items
+      responses:
+        '200':
+          description: Berhasil mengambil data
+    post:
+      summary: ADD - Menambahkan laporan barang baru
+      tags:
+        - Items
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemInput'
+      responses:
+        '201':
+          description: Laporan berhasil ditambahkan
+        '422':
+          description: Validasi input gagal
+  /api/item/{id}:
+    get:
+      summary: READ - Menampilkan detail spesifik laporan
+      tags:
+        - Items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Berhasil menampilkan detail barang
+        '404':
+          description: Data barang tidak ditemukan
+    put:
+      summary: EDIT - Mengupdate laporan barang
+      tags:
+        - Items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemInput'
+      responses:
+        '200':
+          description: Laporan berhasil diperbarui
+        '404':
+          description: Data barang tidak ditemukan
+    delete:
+      summary: DELETE - Menghapus laporan barang
+      tags:
+        - Items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Laporan berhasil dihapus
+        '404':
+          description: Data barang tidak ditemukan
+
+components:
+  schemas:
+    ItemInput:
+      type: object
+      required:
+        - type
+        - title
+        - description
+        - location
+        - contact
+      properties:
+        type:
+          type: string
+          enum: [lost, found]
+          example: "found"
+        title:
+          type: string
+          example: "Dompet Kulit Coklat"
+        description:
+          type: string
+          example: "Ditemukan di bangku taman kampus"
+        location:
+          type: string
+          example: "Taman Kampus"
+        contact:
+          type: string
+          example: "081234567890"
+        status:
+          type: string
+          enum: [open, resolved]
+          example: "open"
